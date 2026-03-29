@@ -1,0 +1,30 @@
+Sistem za logovanje je dizajniran kao centralizovani pipeline:
+Aplikacija -> Filebeat -> Logstash -> Elasticsearch -> Kibana.
+
+1.  Logovi za debugging:
+    -   Koristi se JSON format
+    -   Sadrži request_id, timestamp, service, level
+
+2.  Non-repudiation:
+    -   Loguju se user_id, event_type, IP, timestamp
+    -   security_event flag omogućava filtriranje
+
+3.  Zaštita podataka:
+    -   Maskiranje osetljivih podataka (lozinke, tokeni)
+
+4.  Integritet i dostupnost:
+    -   Centralizovano skladištenje (Elasticsearch)
+    -   Backup i kontrola pristupa
+
+5.  Precizno vreme:
+    -   ISO 8601 + NTP sinhronizacija
+
+6.  Rotacija logova:
+    -   logrotate ili Docker (max-size, max-file)
+
+7.  ELK:
+    -   Logstash parsira
+    -   Elasticsearch indeksira
+    -   Kibana vizualizuje
+
+Ovo rešenje obezbeđuje sigurnost, skalabilnost i preglednost logova.
