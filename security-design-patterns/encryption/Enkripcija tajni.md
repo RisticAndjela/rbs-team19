@@ -1,73 +1,106 @@
-**Zadatak: Dizajnirati mehanizam enkripcije sa ciljem da se zaštiti poverljivost (confidentiality) korisničkih lozinki, ali tako da je lozinku moguće po potrebi pročitati.**
+## Zadatak: Dizajnirati mehanizam enkripcije sa ciljem da se zaštiti poverljivost (**confidentiality**) korisničkih lozinki, ali tako da je lozinku moguće po potrebi pročitati.
 
-**- Istražiti različite algoritme za generisanje ključa za enkripciju/dekripciju na osnovu glavne (master) lozinke i odabrati najbezbedniji. Primer: PBKDF;**
+## Algoritmi za generisanje ključa
 
-PBKDF - password-based key derivation function:
-&nbsp;koristi lozinku + salt (random dodatak lozinki) + veliki broj iteracija hash funkcije
-&nbsp;otporan na brute-force napade jer usporava napadaca
+Istražiti različite algoritme za generisanje ključa za enkripciju/dekripciju na osnovu glavne (master) lozinke i odabrati najbezbedniji.
 
-scrypt:
-&nbsp;otporniji na GPU/ASIC napade
-&nbsp;sporiji i bezbedniji od PBKDF
+### PBKDF (Password-Based Key Derivation Function)
+- koristi lozinku + salt (random dodatak lozinki) + veliki broj iteracija hash funkcije  
+- otporan na brute-force napade jer usporava napadača  
 
-Argon2:
-&nbsp;koristi memoriju i paralelizaciju
-&nbsp;najbezbedniji je od svih algoritama
+### scrypt
+- otporniji na GPU/ASIC napade  
+- sporiji i bezbedniji od PBKDF  
 
-**- Istražiti različite simetrične algoritme za enkripciju/dekripciju i odabrati najbezbedniji;**
+### Argon2
+- koristi memoriju i paralelizaciju  
+- najbezbedniji je od svih algoritama  
 
-Simetricni algoritmi koriste isti kljuc za enkripciju i dekripciju.
+---
 
-AES - advanced encryption standard (AES-256):
-&nbsp;podatak se deli u blokove, prolazi kroz transformacije (zamena bajtova, permutacija, dodavanje kljuca...), a dekripcija je isti proces unazad.
+## Simetrični algoritmi za enkripciju/dekripciju
 
-**- Ispitati konfiguracione parametre odabranih algoritama, i otkriti koje bi to bile preporučene praksa za konfiguraciju;**
+Simetrični algoritmi koriste isti ključ za enkripciju i dekripciju.
 
-preporuke za PBKDF2:
-&nbsp;hash: SHA-256
-&nbsp;salt: minimum 16 bajtova
-&nbsp;iteracije: 100k-600k
-&nbsp;duzina kljuca: 256-bit
+### AES (Advanced Encryption Standard - AES-256)
+- podatak se deli u blokove  
+- prolazi kroz transformacije:
+  - zamena bajtova  
+  - permutacija  
+  - dodavanje ključa  
+- dekripcija je isti proces unazad  
 
-preporuke za Argon2:
-&nbsp;memory cost: 64-256MB
-&nbsp;time cost: 2-4
-&nbsp;parallelism: 1-4
-&nbsp;salt: min 16 bajtova
-&nbsp;duzina kljuca: 256-bit
+---
 
-za AES:
-&nbsp;kljuc: 256-bit (AES-256)
-&nbsp;IV (initialization vector): nasumican, jedinstven
-&nbsp;rezim: GCM (autentifikovana enkripcija) - enkriptuje + proverava da li je podatak izmenjen, ima auth tag
+## Konfiguracioni parametri
 
-**- Odabrati pouzdane provajdere;**
+### PBKDF2
+- hash: SHA-256  
+- salt: minimum 16 bajtova  
+- iteracije: 100k-600k  
+- dužina ključa: 256-bit  
 
-pouzdani provajderi: OpenSSL, BouncyCastle (java), JCA...
+### Argon2
+- memory cost: 64-256MB  
+- time cost: 2-4  
+- parallelism: 1-4  
+- salt: minimum 16 bajtova  
+- dužina ključa: 256-bit  
 
-**- Istražiti da li poslednje verzije za implementaciju imaju ozbiljnijih ranjivosti;**
+### AES
+- ključ: 256-bit (AES-256)  
+- IV (initialization vector): nasumičan, jedinstven  
+- režim: GCM (autentifikovana enkripcija)  
+  - enkriptuje + proverava da li je podatak izmenjen  
+  - ima auth tag  
 
-Heartbleed (OpenSSL) - omogucavao citanje memorije servera, mogao da otkrije kljuceve i lozinke
-potencijalni problemi: slab broj iteracija, reuse IV-a, zastarele biblioteke, neprovereni algoritmi
+---
 
-**- Specificirati zahteve za bezbednu implementaciju mehanizama za kreiranje ključa i enkripciju koristeći sve do sada nabrojano.**
+## Pouzdani provajderi
 
-Enkripcija:
-korisnik unosi master lozinku
-generise se salt (jedinstven za svakog korisnika)
-iz master lozinke se generise kljuc (Argon2/PBKDF2)
-generise se initialization vector (IV)
-lozinka se enkriptuje (AES-256-GCM)
-cuvaju se: ciphertext, salt, IV
+- OpenSSL  
+- BouncyCastle (Java)  
+- JCA  
 
-Dekripcija:
-korisnik ponovo unosi master lozinku
-iz salta se generise isti kljuc
-koristi se IV za dekripciju
-dobija se originalna lozinka
+---
 
-dodatno:
-koristiti proverene biblioteke
-redovno azurirati verzije i proveravati ranjivosti
-koristiti dovoljno jake parametre (iteracije, memorija)
-obezbediti integritet podataka (GCM ili dodatni MAC)
+## Ranjivosti
+
+### Heartbleed (OpenSSL)
+- omogućavao čitanje memorije servera  
+- mogao da otkrije ključeve i lozinke  
+
+### Potencijalni problemi
+- slab broj iteracija  
+- reuse IV-a  
+- zastarele biblioteke  
+- neprovereni algoritmi  
+
+---
+
+## Specifikacija mehanizma
+
+### Enkripcija
+- korisnik unosi master lozinku  
+- generiše se salt (jedinstven za svakog korisnika)  
+- iz master lozinke se generiše ključ (Argon2/PBKDF2)  
+- generiše se initialization vector (IV)  
+- lozinka se enkriptuje (AES-256-GCM)  
+- čuvaju se: ciphertext, salt, IV  
+
+---
+
+### Dekripcija
+- korisnik ponovo unosi master lozinku  
+- iz salta se generiše isti ključ  
+- koristi se IV za dekripciju  
+- dobija se originalna lozinka  
+
+---
+
+## Dodatno
+- koristiti proverene biblioteke  
+- redovno ažurirati verzije i proveravati ranjivosti  
+- koristiti dovoljno jake parametre (iteracije, memorija)  
+- obezbediti integritet podataka (GCM ili dodatni MAC)  
+---
