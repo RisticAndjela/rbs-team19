@@ -3,43 +3,43 @@
 **- Istražiti različite algoritme za generisanje ključa za enkripciju/dekripciju na osnovu glavne (master) lozinke i odabrati najbezbedniji. Primer: PBKDF;**
 
 PBKDF - password-based key derivation function:
-    koristi lozinku + salt (random dodatak lozinki) + veliki broj iteracija hash funkcije
-    otporan na brute-force napade jer usporava napadaca
+&nbsp;koristi lozinku + salt (random dodatak lozinki) + veliki broj iteracija hash funkcije
+&nbsp;otporan na brute-force napade jer usporava napadaca
 
 scrypt:
-    otporniji na GPU/ASIC napade
-    sporiji i bezbedniji od PBKDF
+&nbsp;otporniji na GPU/ASIC napade
+&nbsp;sporiji i bezbedniji od PBKDF
 
 Argon2:
-    koristi memoriju i paralelizaciju
-    najbezbedniji je od svih algoritama
+&nbsp;koristi memoriju i paralelizaciju
+&nbsp;najbezbedniji je od svih algoritama
 
 **- Istražiti različite simetrične algoritme za enkripciju/dekripciju i odabrati najbezbedniji;**
 
 Simetricni algoritmi koriste isti kljuc za enkripciju i dekripciju.
 
 AES - advanced encryption standard (AES-256):
-    podatak se deli u blokove, prolazi kroz transformacije (zamena bajtova, permutacija, dodavanje kljuca...), a dekripcija je isti proces unazad.
+&nbsp;podatak se deli u blokove, prolazi kroz transformacije (zamena bajtova, permutacija, dodavanje kljuca...), a dekripcija je isti proces unazad.
 
 **- Ispitati konfiguracione parametre odabranih algoritama, i otkriti koje bi to bile preporučene praksa za konfiguraciju;**
 
 preporuke za PBKDF2:
-    hash: SHA-256
-    salt: minimum 16 bajtova
-    iteracije: 100k-600k
-    duzina kljuca: 256-bit
+&nbsp;hash: SHA-256
+&nbsp;salt: minimum 16 bajtova
+&nbsp;iteracije: 100k-600k
+&nbsp;duzina kljuca: 256-bit
 
 preporuke za Argon2:
-    memory cost: 64-256MB
-    time cost: 2-4
-    parallelism: 1-4
-    salt: min 16 bajtova
-    duzina kljuca: 256-bit
+&nbsp;memory cost: 64-256MB
+&nbsp;time cost: 2-4
+&nbsp;parallelism: 1-4
+&nbsp;salt: min 16 bajtova
+&nbsp;duzina kljuca: 256-bit
 
 za AES:
-    kljuc: 256-bit (AES-256)
-    IV (initialization vector): nasumican, jedinstven
-    rezim: GCM (autentifikovana enkripcija) - enkriptuje + proverava da li je podatak izmenjen, ima auth tag
+&nbsp;kljuc: 256-bit (AES-256)
+&nbsp;IV (initialization vector): nasumican, jedinstven
+&nbsp;rezim: GCM (autentifikovana enkripcija) - enkriptuje + proverava da li je podatak izmenjen, ima auth tag
 
 **- Odabrati pouzdane provajdere;**
 
