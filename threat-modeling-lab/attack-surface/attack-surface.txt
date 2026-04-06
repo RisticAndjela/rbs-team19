@@ -1,0 +1,85 @@
+1. Tipovi korisnika i sistema koji komuniciraju sa MegaTravel
+    A) Ljudski korisnici
+        Krajnji korisnici (klijenti)
+        Zaposleni (agent za putovanja, administratori)
+        Partneri (hoteli, avio-kompanije, rent-a-car agencije)
+
+    B) Eksterni sistemi
+        Sistemi za plaćanje (payment gateway)
+        Sistemi partnera (API hotela, avio-kompanija)
+        Email/SMS servisi
+        Sistemi za autentifikaciju (npr. OAuth, SSO)
+        Analitički i marketing alati
+
+
+2. Ulazne tačke (Entry Points)
+    A) Web aplikacija (frontend)
+        Login forma
+        Registracija korisnika
+        Pretraga putovanja
+        Rezervacija i unos podataka
+        Forma za plaćanje
+
+        Mogući napadi:
+            SQL injection
+            XSS (Cross-Site Scripting)
+            Credential stuffing
+
+    B) API endpoints (backend)
+        REST API za mobilne aplikacije
+        API za komunikaciju sa partnerima
+        API za upravljanje rezervacijama
+
+        Mogući napadi:
+            Neautorizovan pristup (broken authentication)
+            Manipulacija parametrima
+            API abuse (DoS)
+
+    C) Mobilna aplikacija
+        API pozivi ka backendu
+        Lokalno skladištenje podataka
+
+        Mogući napadi:
+            Reverse engineering aplikacije
+            Krađa tokena
+            Man-in-the-middle (ako nema HTTPS pravilno)
+
+    D) Sistem za plaćanje
+        Integracija sa payment gateway-om
+
+        Mogući napadi:
+            Krađa podataka kartica
+            Replay napadi
+            Nevalidne transakcije
+
+    E) Administrativni panel
+        Pristup zaposlenih i admina
+
+        Mogući napadi:
+            Privilege escalation
+            Phishing zaposlenih
+            Brute force login
+
+    F) Integracije sa partnerima
+        API komunikacija sa hotelima i avio-kompanijama
+
+        Mogući napadi:
+            Kompromitovan partner sistem
+            Nevalidni podaci iz eksternog sistema
+
+    G) Email i SMS sistemi
+        Slanje potvrda rezervacija
+
+            Mogući napadi:
+            Phishing napadi
+            Spoofing poruka
+            
+    H) Infrastruktura
+        Web serveri
+        Baza podataka
+        Cloud servisi
+
+        Mogući napadi:
+            DDoS napadi
+            Nezakrpljene ranjivosti (unpatched systems)
+            Nepravilna konfiguracija (misconfiguration)
