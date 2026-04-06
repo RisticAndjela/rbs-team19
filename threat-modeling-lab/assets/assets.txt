@@ -1,0 +1,81 @@
+1. Lični podaci korisnika 
+(ime, prezime, email, telefon, pasoš)
+
+Izloženost (exposure):
+Pristup imaju registrovani korisnici (sopstveni podaci), administratori sistema i backend servisi.
+Bezbednosni ciljevi (CIA):
+Poverljivost: veoma visoka
+Integritet: visoka
+Dostupnost: srednja
+Uticaj kompromitacije (impact):
+Neovlašćeno otkrivanje podataka može dovesti do kršenja zakona o zaštiti podataka (npr. GDPR), gubitka poverenja korisnika i reputacione štete kompanije.
+
+2. Finansijski podaci i podaci o plaćanju
+(brojevi kartica, transakcije, istorija plaćanja)
+
+Izloženost (exposure):
+Pristup imaju payment servisi, backend sistemi i eventualno eksterni procesori plaćanja.
+Bezbednosni ciljevi (CIA):
+Poverljivost: kritična
+Integritet: kritična
+Dostupnost: visoka
+Uticaj kompromitacije (impact):
+Može dovesti do finansijskih gubitaka, zloupotrebe kartica, pravnih posledica i ozbiljnog narušavanja reputacije.
+
+3. Rezervacije i planovi putovanja
+(detalji o smeštaju, letovima, aktivnostima)
+
+Izloženost (exposure):
+Pristup imaju korisnici, backend sistemi i partneri (hoteli, avio-kompanije).
+Bezbednosni ciljevi (CIA):
+Poverljivost: srednja
+Integritet: veoma visoka
+Dostupnost: visoka
+Uticaj kompromitacije (impact):
+Izmena ili brisanje rezervacija može dovesti do nezadovoljstva korisnika, finansijskih gubitaka i operativnih problema.
+
+4. Autentifikacioni podaci
+(lozinke, tokeni, session ID-jevi)
+
+Izloženost (exposure):
+Pristup imaju korisnici i autentifikacioni serveri.
+Bezbednosni ciljevi (CIA):
+Poverljivost: kritična
+Integritet: visoka
+Dostupnost: srednja
+Uticaj kompromitacije (impact):
+Omogućava neovlašćen pristup nalozima, krađu identiteta i dalju eskalaciju napada.
+
+5. Baza podataka sistema
+
+Izloženost (exposure):
+Backend servisi i administratori sistema.
+Bezbednosni ciljevi (CIA):
+Poverljivost: kritična
+Integritet: kritična
+Dostupnost: visoka
+Uticaj kompromitacije (impact):
+Potpuni kompromis sistema – gubitak ili izmena podataka, prekid rada i ozbiljna poslovna šteta.
+
+6. Backend aplikacioni serveri
+
+Izloženost (exposure):
+Interni sistemi i DevOps tim.
+Bezbednosni ciljevi (CIA):
+Poverljivost: srednja
+Integritet: veoma visoka
+Dostupnost: kritična
+Uticaj kompromitacije (impact):
+Napadač može preuzeti kontrolu nad sistemom, manipulisati podacima i izazvati prekid rada servisa.
+
+7. Integracije sa eksternim sistemima
+(payment gateway, airline API, hotel sistemi)
+
+Izloženost (exposure):
+Eksterni partneri i API konekcije.
+Bezbednosni ciljevi (CIA):
+Poverljivost: visoka
+Integritet: visoka
+Dostupnost: visoka
+Uticaj kompromitacije (impact):
+Može dovesti do lažnih rezervacija, prekida usluge i kompromitacije lanca snabdevanja (supply chain attack).
