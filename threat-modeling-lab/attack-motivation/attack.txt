@@ -1,0 +1,39 @@
+1. Poveznica između London, Boston i Hong Kong
+MegaTravel ima glavna sedišta u sva tri grada:
+London:
+    - glavni finansijski i poslovni centar Evrope
+    - sedište u Londonu omogućava MegaTravel-u pristup evropskim tržištima, partnerima, i regulativama vezanim za turizam i putovanja
+Boston:
+    - značajan centar tehnologije i obrazovanja u SAD 
+    - sedište u Bostonu verovatno služi za razvoj IT sistema, aplikacija i istraživanje korisničkog iskustva
+Hong Kong 
+    - strateški centar u Aziji i Pacifiku sa odličnim pristupom azijskim tržištima i međunarodnoj trgovini
+Poveznica: Sva tri grada su globalni čvorišta za poslovanje, tehnologiju i finansije. MegaTravel ih koristi da pokrije tri velika regionalna tržišta: Evropu, SAD i Aziju, i da implementira tehnološke i operativne standarde širom sveta.
+
+2. Motivacija napadača na MegaTravel
+MegaTravel je globalna firma sa velikim brojem klijenata i visokotehnološkim sistemima. To čini kompaniju primamljivom za različite klase napadača.
+A) Hakeri za finansijsku dobit
+    Primer: cyber kriminalci koji ciljaju podatke kreditnih kartica i lične informacije klijenata.
+    Veština: visoka (poznavanje web sigurnosti, SQL injection, phishing, ransomware).
+    Pristup sistemu: preko ranjivih web aplikacija, neosiguranih API-ja ili krađom lozinki zaposlenih.
+    Cilj: novčana dobit (prodaja podataka na crnom tržištu, direktna krađa novca).
+B) Industrijski konkurenti (korporativni špijuni)
+    Primer: konkurentske turističke kompanije koje žele pristup poslovnim planovima MegaTravel-a, listama klijenata ili tehnologiji za optimizaciju putovanja.
+    Veština: srednja do visoka (socijalni inženjering, insider threats, penetration testing).
+    Pristup: pokušaji kompromitovanja zaposlenih, infiltracija u interne mreže ili krađa uređaja sa poverljivim podacima.
+    Cilj: sticanje poslovne prednosti, industrijska špijunaža.
+C) Haktivisti
+    Primer: grupe ili pojedinci koji žele da skrenu pažnju na neku politiku ili praksu MegaTravel-a (npr. ekološki problematične ture).
+    Veština: srednja (web defacement, DDoS, društveni mediji).
+    Pristup: javni web serveri, društveni inženjering.
+    Cilj: reputaciona šteta, prisiljavanje kompanije da menja praksu.
+D) Državno sponzorisani napadači
+    Primer: napadi od strane stranih država radi prikupljanja ekonomskih ili geopolitičkih informacija (npr. kretanja putnika ili partnerstva sa državnim institucijama).
+    Veština: vrlo visoka (advanced persistent threats, zero-day exploiti, sofisticirane mrežne operacije).
+    Pristup: sofisticirani napadi, infiltracija kroz treće strane, kompromitovanje softverskih dobavljača.
+    Cilj: strateška prednost, špijunaža, pritisak na međunarodne partnere.
+E) Unutrašnji napadači (insajderi)
+    Primer: nezadovoljni zaposleni ili ljudi sa pristupom internim podacima.
+    Veština: varira od niske do srednje (poznavanje internog sistema, socijalni inženjering).
+    Pristup: direktan pristup sistemima, krađa podataka, namerno ometanje operacija.
+    Cilj: lična korist, osvetnička motivacija, sabotaža.
