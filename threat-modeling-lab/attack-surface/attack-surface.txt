@@ -33,7 +33,7 @@
         Mogući napadi:
             Neautorizovan pristup (broken authentication)
             Manipulacija parametrima
-            API abuse (DoS)
+            API abuse (DoS - Denial of Service) - preopterećenje sistema
 
     C) Mobilna aplikacija
         API pozivi ka backendu
@@ -80,6 +80,6 @@
         Cloud servisi
 
         Mogući napadi:
-            DDoS napadi
+            DDoS (Distributed DoS) napadi
             Nezakrpljene ranjivosti (unpatched systems)
             Nepravilna konfiguracija (misconfiguration)
