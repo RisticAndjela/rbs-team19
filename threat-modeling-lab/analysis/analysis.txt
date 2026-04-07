@@ -1,9 +1,51 @@
-U okviru MegaTravel sistema, primenom STRIDE metodologije identifikovane su ključne bezbednosne pretnje na osnovu definisanog dijagrama toka podataka. Analiza pokazuje da je DMZ sloj (WAF/Gateway) posebno izložen napadima uskraćivanja usluge (Denial of Service), gde napadač može preplaviti sistem velikim brojem zahteva i time onemogućiti dostupnost servisa. Ova pretnja proizilazi iz potencijalnog nedostatka mehanizama za ograničavanje saobraćaja i skaliranje sistema. Kao mere ublažavanja predlažu se implementacija rate limiting-a, korišćenje CDN/WAF rešenja i horizontalno skaliranje infrastrukture.
-Dalje, u komunikaciji između klijenta i sistema postoji rizik od lažnog predstavljanja (Spoofing), gde napadač može pokušati da se predstavi kao legitiman korisnik. Ova ranjivost je najčešće posledica nedovoljne validacije autentifikacionih tokena i neadekvatnog upravljanja sesijama. Mitigacija uključuje upotrebu sigurnih JWT tokena sa validacijom potpisa, korišćenje sigurnih kolačića i striktno sprovođenje TLS protokola.
-U okviru centralnog poslovnog sloja (Booking Engine), identifikovana je pretnja manipulacije podacima (Tampering), gde napadač može menjati parametre rezervacija poput cene ili datuma. Ova ranjivost nastaje ukoliko backend sistem veruje podacima koji dolaze sa klijentske strane bez dodatne validacije. Efikasne mere zaštite uključuju validaciju podataka na serverskoj strani i striktno razdvajanje prezentacionog i poslovnog sloja.
-Takođe, postoji rizik od eskalacije privilegija (Elevation of Privilege), gde korisnik može dobiti veća ovlašćenja nego što mu pripadaju. Ova pretnja je povezana sa neadekvatno implementiranim mehanizmima kontrole pristupa. Kao mitigacija preporučuje se implementacija role-based access control (RBAC) sistema i validacija privilegija unutar backend logike.
-Baza podataka predstavlja najkritičniji deo sistema, gde je identifikovana pretnja SQL injekcije (Tampering). Napadač može iskoristiti nevalidiran unos kako bi izvršio zlonamerne upite nad bazom. Ova ranjivost se javlja kada se koriste nebezbedni načini formiranja SQL upita. Mitigacija podrazumeva korišćenje pripremljenih izraza (prepared statements), ORM sloja i sanitizaciju unosa.
-Pored toga, postoji rizik od otkrivanja informacija (Information Disclosure), gde napadač može pristupiti osetljivim podacima kao što su korisničke lozinke. Ova pretnja je posledica čuvanja podataka u nešifrovanom obliku ili neadekvatne kontrole pristupa. Mere zaštite uključuju heširanje lozinki korišćenjem sigurnih algoritama, enkripciju podataka u mirovanju i striktno ograničavanje pristupa bazi.
-Komunikacija sa eksternim platnim sistemima nosi dodatne rizike, uključujući napade presretanja komunikacije (Man-in-the-Middle). Ova pretnja može dovesti do krađe finansijskih podataka ukoliko komunikacija nije adekvatno zaštićena. Kao mitigacija preporučuje se korišćenje savremenih TLS protokola i validacija sertifikata.
-Na kraju, identifikovan je i rizik od ponovnog izvršavanja transakcija (Replay Attack), gde napadač može ponovo poslati legitimne zahteve kako bi izvršio duple transakcije. Ova ranjivost nastaje usled nedostatka jedinstvenih identifikatora zahteva. Mitigacija uključuje korišćenje jedinstvenih ID-jeva transakcija, vremenskih oznaka i mehanizama za sprečavanje dupliranja zahteva.
-Ukupno posmatrano, analiza pokazuje da MegaTravel sistem ima jasno definisane granice poverenja i kritične tačke napada, ali da implementacijom odgovarajućih bezbednosnih kontrola može značajno smanjiti rizik od kompromitacije sistema.
+U okviru MegaTravel sistema, 
+primenom STRIDE metodologije identifikovane su ključne bezbednosne pretnje na osnovu definisanog dijagrama toka podataka. 
+Analiza pokazuje da je DMZ sloj (WAF/Gateway) posebno izložen napadima uskraćivanja usluge (Denial of Service), 
+gde napadač može preplaviti sistem velikim brojem zahteva i time onemogućiti dostupnost servisa. 
+Ova pretnja proizilazi iz potencijalnog nedostatka mehanizama za ograničavanje saobraćaja i skaliranje sistema. 
+Kao mere ublažavanja predlažu se implementacija rate limiting-a, 
+korišćenje CDN/WAF rešenja i horizontalno skaliranje infrastrukture.
+
+Dalje, u komunikaciji između klijenta i sistema postoji rizik od lažnog predstavljanja (Spoofing), 
+gde napadač može pokušati da se predstavi kao legitiman korisnik. 
+Ova ranjivost je najčešće posledica nedovoljne validacije autentifikacionih tokena i neadekvatnog upravljanja sesijama. 
+Mitigacija uključuje upotrebu sigurnih JWT tokena sa validacijom potpisa, 
+korišćenje sigurnih kolačića i striktno sprovođenje TLS protokola.
+
+U okviru centralnog poslovnog sloja (Booking Engine), 
+identifikovana je pretnja manipulacije podacima (Tampering), 
+gde napadač može menjati parametre rezervacija poput cene ili datuma. 
+Ova ranjivost nastaje ukoliko backend sistem veruje podacima koji dolaze sa klijentske strane bez dodatne validacije. 
+Efikasne mere zaštite uključuju validaciju podataka na serverskoj strani i striktno razdvajanje prezentacionog i poslovnog sloja.
+
+Takođe, postoji rizik od eskalacije privilegija (Elevation of Privilege), 
+gde korisnik može dobiti veća ovlašćenja nego što mu pripadaju. 
+Ova pretnja je povezana sa neadekvatno implementiranim mehanizmima kontrole pristupa. 
+Kao mitigacija preporučuje se implementacija role-based access control (RBAC) sistema 
+i validacija privilegija unutar backend logike.
+
+Baza podataka predstavlja najkritičniji deo sistema, 
+gde je identifikovana pretnja SQL injekcije (Tampering). 
+Napadač može iskoristiti nevalidiran unos kako bi izvršio zlonamerne upite nad bazom. 
+Ova ranjivost se javlja kada se koriste nebezbedni načini formiranja SQL upita. 
+Mitigacija podrazumeva korišćenje pripremljenih izraza (prepared statements), ORM sloja i sanitizaciju unosa.
+
+Pored toga, postoji rizik od otkrivanja informacija (Information Disclosure), 
+gde napadač može pristupiti osetljivim podacima kao što su korisničke lozinke. 
+Ova pretnja je posledica čuvanja podataka u nešifrovanom obliku ili neadekvatne kontrole pristupa. 
+Mere zaštite uključuju heširanje lozinki korišćenjem sigurnih algoritama, 
+enkripciju podataka u mirovanju i striktno ograničavanje pristupa bazi.
+
+Komunikacija sa eksternim platnim sistemima nosi dodatne rizike, 
+uključujući napade presretanja komunikacije (Man-in-the-Middle). 
+Ova pretnja može dovesti do krađe finansijskih podataka ukoliko komunikacija nije adekvatno zaštićena. 
+Kao mitigacija preporučuje se korišćenje savremenih TLS protokola i validacija sertifikata.
+
+Na kraju, identifikovan je i rizik od ponovnog izvršavanja transakcija (Replay Attack), 
+gde napadač može ponovo poslati legitimne zahteve kako bi izvršio duple transakcije. 
+Ova ranjivost nastaje usled nedostatka jedinstvenih identifikatora zahteva. 
+Mitigacija uključuje korišćenje jedinstvenih ID-jeva transakcija, 
+vremenskih oznaka i mehanizama za sprečavanje dupliranja zahteva.
+
+Ukupno posmatrano, analiza pokazuje da MegaTravel sistem ima jasno definisane granice poverenja i kritične tačke napada, 
+ali da implementacijom odgovarajućih bezbednosnih kontrola može značajno smanjiti rizik od kompromitacije sistema.
