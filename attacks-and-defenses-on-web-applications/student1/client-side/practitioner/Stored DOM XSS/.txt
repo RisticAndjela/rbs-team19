@@ -1,0 +1,25 @@
+**Objašnjenje klase napada**
+Ovo je **stored DOM XSS**, gde se zlonamerni unos trajno čuva na serveru (u ovom slučaju komentar) i kasnije se renderuje kroz DOM na strani klijenta bez adekvatne zaštite. Time se omogućava izvršavanje JavaScript-a svaki put kada se stranica učita.
+
+**Uticaj eksploatacije**
+Napadač može ubaciti skriptu koja se izvršava svim korisnicima koji učitaju stranicu. To može dovesti do krađe sesija, manipulacije sadržajem, phishing napada i izvršavanja akcija u ime žrtve.
+
+**Ranjivosti**
+
+* Nedovoljno escape-ovanje korisničkog inputa
+* Pogrešna implementacija sanitizacije (`replace()` koji menja samo prvo pojavljivanje)
+* Direktno ubacivanje komentara u DOM bez sigurnog renderovanja
+
+**Rešenje (eksploit)**
+Payload:
+`<><img src=1 onerror=alert(1)>`
+
+Prvi set `< >` se delimično sanitizuje, ali drugi ostaje netaknut zbog slabog `replace()` mehanizma, što omogućava ubacivanje HTML-a i izvršavanje `alert(1)`.
+
+**Kontramere**
+
+* Korišćenje robusnih HTML sanitizera (ne ručno `replace()`)
+* Escaping svih korisničkih podataka pre renderovanja u DOM
+* Korišćenje sigurnih metoda za prikaz teksta (`textContent` umesto `innerHTML`)
+* Validacija i filtriranje inputa na serveru i klijentu
+* Primena Content Security Policy (CSP) za ograničavanje izvršavanja skripti

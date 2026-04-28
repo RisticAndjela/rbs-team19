@@ -1,0 +1,16 @@
+**Objašnjenje klase napada**
+Ovo je **DOM-based XSS**, gde se zlonamerni JavaScript izvršava direktno u browseru manipulacijom DOM-a. U ovom slučaju, aplikacija koristi `document.write` sa vrednošću iz `location.search`, što znači da korisnički unos iz URL-a ulazi direktno u HTML bez sanitizacije.
+
+**Uticaj eksploatacije**
+Napadač može izvršiti proizvoljan JavaScript u browseru žrtve – krađa sesije, preusmeravanje, manipulacija sadržajem stranice. U ovom labu, cilj je samo izvršiti `alert`, ali u realnim scenarijima posledice su mnogo ozbiljnije.
+
+**Ranjivosti**
+Korišćenje `document.write` sa neproverenim inputom, direktno ubacivanje podataka iz `location.search` u HTML i nepostojanje escaping/sanitizacije.
+
+**Rešenje (eksploit)**
+Pošto se unos ubacuje unutar `img src` atributa, payload mora da “izađe” iz atributa:
+`"><svg onload=alert(1)>`
+Time se zatvara postojeći atribut i ubacuje novi HTML element sa JavaScript-om koji se izvršava.
+
+**Kontramere**
+Izbegavati `document.write`, koristiti bezbedne DOM metode (`textContent`, `setAttribute`), validirati i escapovati korisnički unos i primeniti Content Security Policy (CSP).

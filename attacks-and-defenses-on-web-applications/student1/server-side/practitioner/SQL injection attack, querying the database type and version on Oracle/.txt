@@ -1,0 +1,18 @@
+**Objašnjenje klase napada**
+Ovo je SQL injection pomoću **UNION napada**, gde napadač proširuje originalni upit dodatnim `SELECT` izrazom kako bi izvukao podatke iz baze. Kod Oracle baze, svaki `SELECT` mora imati `FROM`, pa se koristi tabela `dual`.
+
+**Uticaj eksploatacije**
+Napadač može da čita podatke iz baze, uključujući sistemske informacije kao što je verzija baze. Ovo pomaže u daljoj eskalaciji napada jer otkriva detalje o okruženju.
+
+**Ranjivosti**
+Nepostojeća validacija inputa, direktno ubacivanje u SQL upit i mogućnost izvršavanja UNION upita. Takođe, aplikacija vraća rezultate upita korisniku.
+
+**Rešenje (eksploit)**
+Prvo je utvrđen broj kolona i tip podataka pomoću:
+`'+UNION+SELECT+'abc','def'+FROM+dual--`
+Zatim je korišćen payload:
+`'+UNION+SELECT+BANNER,+NULL+FROM+v$version--`
+čime se prikazuje verzija Oracle baze.
+
+**Kontramere**
+Prepared statements, ograničavanje privilegija (npr. zabrana pristupa sistemskim tabelama), validacija inputa, kao i skrivanje detalja o bazi (error handling i output filtering).

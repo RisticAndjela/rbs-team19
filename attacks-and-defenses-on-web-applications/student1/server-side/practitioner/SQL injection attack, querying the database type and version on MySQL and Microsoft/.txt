@@ -1,0 +1,18 @@
+**Objašnjenje klase napada**
+Ovo je SQL injection pomoću **UNION napada**, gde se originalni upit proširuje dodatnim `SELECT` kako bi se izvukli podaci iz baze. U ovom slučaju cilj je dobiti verziju baze (MySQL ili Microsoft SQL Server).
+
+**Uticaj eksploatacije**
+Napadač može da čita podatke iz baze i dobije informacije o sistemu (npr. verziju baze), što olakšava dalje napade i iskorišćavanje poznatih ranjivosti.
+
+**Ranjivosti**
+Direktno ubacivanje korisničkog unosa u SQL upit, nedostatak validacije i omogućeno izvršavanje UNION upita koji vraća rezultate korisniku.
+
+**Rešenje (eksploit)**
+Prvo je određen broj kolona i tip podataka:
+`'+UNION+SELECT+'abc','def'#`
+Zatim je korišćen payload:
+`'+UNION+SELECT+@@version,+NULL#`
+čime se prikazuje verzija baze. (Isto si mogla uraditi direktno preko URL-a, što je potpuno validno.)
+
+**Kontramere**
+Korišćenje prepared statements, validacija inputa, ograničavanje privilegija baze, kao i skrivanje izlaznih podataka i detalja o sistemu.

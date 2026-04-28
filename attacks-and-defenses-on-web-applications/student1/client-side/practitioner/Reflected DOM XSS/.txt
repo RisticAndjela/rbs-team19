@@ -1,0 +1,30 @@
+**Objašnjenje klase napada**
+Ovo je **reflected DOM XSS**, gde server reflektuje korisnički unos u JSON odgovoru, a zatim frontend JavaScript taj odgovor nesigurno obrađuje (u ovom slučaju preko `eval()`), što omogućava izvršavanje koda u browseru.
+
+**Uticaj eksploatacije**
+Napadač može izvršiti proizvoljan JavaScript u kontekstu aplikacije. To omogućava krađu sesije, manipulaciju DOM-om i izvršavanje akcija u ime korisnika.
+
+**Ranjivosti**
+
+* Korišćenje `eval()` nad podacima iz servera
+* Nedovoljno escaping-a specijalnih karaktera (posebno backslash-a)
+* Reflektovanje korisničkog unosa u JSON bez sigurnog parsiranja (`JSON.parse` se ne koristi)
+
+**Rešenje (eksploit)**
+Payload:
+`\"-alert(1)}//`
+
+Ovim se:
+
+* bezi iz string konteksta (`\"`)
+* zatvara logika unutar `eval()`
+* ubacuje JavaScript funkcija `alert(1)`
+* ostatak se komentariše (`//`)
+
+**Kontramere**
+
+* Nikada ne koristiti `eval()` za parsiranje server odgovora
+* Koristiti `JSON.parse()` umesto evaluacije stringa
+* Ispravno escapovati sve specijalne karaktere (uključujući `\`)
+* Validacija i sanitizacija server response podataka pre obrade
+* Uvođenje CSP (Content Security Policy) kao dodatna zaštita

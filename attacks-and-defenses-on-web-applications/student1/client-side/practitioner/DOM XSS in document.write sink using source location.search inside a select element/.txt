@@ -1,0 +1,16 @@
+**Objašnjenje klase napada**
+Ovo je **DOM-based XSS**, gde se korisnički unos iz `location.search` ubacuje u DOM pomoću `document.write`. U ovom slučaju, unos se nalazi unutar `<select>` elementa, što znači da napadač mora da “izađe” iz tog HTML konteksta.
+
+**Uticaj eksploatacije**
+Omogućava izvršavanje JavaScript-a u browseru žrtve – krađa sesije, manipulacija sadržajem ili phishing napadi kroz izmene stranice.
+
+**Ranjivosti**
+Korišćenje `document.write` sa neproverenim inputom i direktno ubacivanje korisničkog unosa u HTML bez escaping-a, unutar `<select>` elementa.
+
+**Rešenje (eksploit)**
+Payload mora da zatvori `<select>` i ubaci novi element sa JS-om:
+`"></select><img src=1 onerror=alert(1)>`
+Time se izlazi iz postojećeg elementa i izvršava `alert`.
+
+**Kontramere**
+Izbegavati `document.write`, koristiti bezbedne DOM API-je (`textContent`, `createElement`), validirati/escapovati input i primeniti Content Security Policy (CSP).

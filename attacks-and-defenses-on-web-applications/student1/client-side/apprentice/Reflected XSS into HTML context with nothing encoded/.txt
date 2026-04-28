@@ -1,0 +1,16 @@
+**Objašnjenje klase napada**
+Ovo je **reflected XSS**, gde se korisnički unos odmah vraća u HTML odgovor bez ikakvog encoding-a ili sanitizacije, i izvršava se kao JavaScript u browseru.
+
+**Uticaj eksploatacije**
+Napadač može izvršiti proizvoljan JavaScript u kontekstu žrtve – krađa kolačića, sesije, ili manipulacija sadržajem stranice.
+
+**Ranjivosti**
+Potpuni izostanak validacije i encoding-a korisničkog unosa pre ubacivanja u HTML.
+
+**Rešenje (eksploit)**
+U search polje unet payload:
+`<script>alert(1)</script>`
+Pošto se unos direktno renderuje u HTML, skripta se izvršava.
+
+**Kontramere**
+Obavezno HTML encoding korisničkog unosa, validacija inputa i korišćenje sigurnih templating mehanizama koji automatski escapuju sadržaj.
