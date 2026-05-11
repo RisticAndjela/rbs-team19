@@ -1,0 +1,178 @@
+# Filesystem Review
+
+U okviru svog dela projekta implementirana je Bash skripta za proveru bezbednosti fajl sistema na Linux sistemu.
+
+Skripta koristi standardne Linux komande i služi za pronalaženje potencijalno nesigurnih konfiguracija i permisija fajlova.
+
+Implementirane su sledeće provere:
+
+---
+
+# Source code
+
+```bash
+#!/bin/bash
+
+echo "=================================="
+echo "FILESYSTEM SECURITY AUDIT"
+echo "=================================="
+
+echo
+echo "[1] Searching for world writable files..."
+find / -type f -perm -002 2>/dev/null | grep -v "^/proc" | grep -v "^/sys"
+
+echo
+echo "=================================="
+
+echo
+echo "[2] Searching for SUID files..."
+find / -perm -4000 2>/dev/null | grep -v "^/snap"
+
+echo
+echo "=================================="
+
+echo
+echo "[3] Checking sensitive files permissions..."
+
+ls -l /etc/shadow 2>/dev/null
+ls -l /etc/passwd 2>/dev/null
+
+echo
+echo "=================================="
+
+echo
+echo "[4] Checking backup directories..."
+
+find / -type d -name backup 2>/dev/null
+
+echo
+echo "=================================="
+
+echo
+echo "Audit finished."
+```
+
+---
+
+# 1. Provera world writable fajlova
+
+Korišćena komanda:
+
+```bash
+find / -type f -perm -002 2>/dev/null | grep -v "^/proc" | grep -v "^/sys"
+```
+
+Ova provera pronalazi fajlove koje svi korisnici na sistemu mogu da menjaju.
+
+Takvi fajlovi predstavljaju bezbednosni problem zato što bilo koji korisnik može:
+- da menja sadržaj fajla
+- ubaci maliciozni kod
+- ošteti aplikaciju ili konfiguraciju
+
+Iz rezultata su isključeni `/proc` i `/sys` direktorijumi jer predstavljaju virtuelne sistemske fajlove koji nisu relevantni za ovu proveru.
+
+Primer pronađenih fajlova:
+
+```text
+/home/ana/Desktop/AR/vezbe3/v03-podniz.S
+/home/ana/Downloads/Vežbe_export/09/zadaci/01_hello_world.sh
+```
+
+---
+
+# 2. Provera SUID fajlova
+
+Korišćena komanda:
+
+```bash
+find / -perm -4000 2>/dev/null | grep -v "^/snap"
+```
+
+Ova provera pronalazi fajlove koji imaju uključen SUID bit.
+
+SUID fajlovi se izvršavaju sa privilegijama vlasnika fajla, najčešće root korisnika.
+
+Takvi fajlovi mogu predstavljati bezbednosni rizik ukoliko:
+- imaju ranjivost
+- nisu pravilno konfigurisani
+- imaju nepotrebno dodeljen SUID bit
+
+Iz rezultata su uklonjeni `/snap` direktorijumi kako bi izlaz bio pregledniji.
+
+Primer pronađenih SUID fajlova:
+
+```text
+/usr/bin/sudo
+/usr/bin/passwd
+/usr/bin/su
+```
+
+---
+
+# 3. Provera permisija osetljivih sistemskih fajlova
+
+Korišćene komande:
+
+```bash
+ls -l /etc/shadow
+ls -l /etc/passwd
+```
+
+Ovom proverom pregledaju se permisije važnih sistemskih fajlova.
+
+`/etc/shadow` sadrži hash-ovane lozinke korisnika i ne sme biti dostupan običnim korisnicima.
+
+`/etc/passwd` sadrži informacije o korisnicima sistema.
+
+Cilj provere je da se utvrdi da li su permisije pravilno podešene.
+
+Primer rezultata:
+
+```text
+-rw-r----- 1 root shadow 1462 Mar 12 2024 /etc/shadow
+-rw-r--r-- 1 root root 2881 Mar 12 2024 /etc/passwd
+```
+
+Na osnovu rezultata može se videti da je `/etc/shadow` dostupan samo privilegovanim korisnicima.
+
+---
+
+# 4. Provera backup direktorijuma
+
+Korišćena komanda:
+
+```bash
+find / -type d -name backup 2>/dev/null
+```
+
+Ova provera pronalazi direktorijume namenjene čuvanju backup podataka.
+
+Backup direktorijumi mogu sadržati:
+- konfiguracione fajlove
+- lozinke
+- baze podataka
+- druge osetljive informacije
+
+Ukoliko nisu pravilno zaštićeni, mogu predstavljati bezbednosni problem.
+
+Primer pronađenog direktorijuma:
+
+```text
+/home/ana/Documents/backup
+```
+
+---
+
+# Pokretanje skripte
+
+Skripta se pokreće komandom:
+
+```bash
+./audit.sh
+```
+
+Pre pokretanja potrebno je dodeliti dozvolu za izvršavanje:
+
+```bash
+chmod +x audit.sh
+```
