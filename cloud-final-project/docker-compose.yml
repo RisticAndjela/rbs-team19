@@ -1,0 +1,12 @@
+services:
+  oblak:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      OBLAK_DATABASE_URL: sqlite:///./oblak.db
+      OBLAK_STORAGE_ROOT: ./.storage/functions
+    volumes:
+      - oblak-data:/app/.storage
+volumes:
+  oblak-data:
