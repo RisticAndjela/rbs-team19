@@ -63,7 +63,13 @@ def invoke_function(token: str, body: InvokeRequest, db: Session = Depends(get_d
 
 @router.get("/audit", response_model=list[AuditEventResponse])
 def audit_events(user: User = Depends(require_user), db: Session = Depends(get_db)):
-    rows = db.query(AuditEvent).order_by(AuditEvent.created_at.desc()).limit(100).all()
+    rows = (
+        db.query(AuditEvent)
+        .filter(AuditEvent.actor_id == user.id)
+        .order_by(AuditEvent.created_at.desc())
+        .limit(100)
+        .all()
+    )
     return [
         AuditEventResponse(
             action=row.action,

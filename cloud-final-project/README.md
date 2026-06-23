@@ -12,6 +12,7 @@ This implementation follows the project scope from the specification: authentica
 - **Database:** SQLAlchemy; SQLite by default, PostgreSQL-compatible via `OBLAK_DATABASE_URL`.
 - **Code verifier:** static AST/rule checks, regex checks, optional ClamAV scan, optional/mock LLM analyzer adapter.
 - **Execution:** simulator Firecracker orchestrator using a subprocess sandbox with timeout, isolated working directory, restricted environment and optional Unix resource limits.
+- **Dependency preparation:** optional `requirements.txt` installation into a per-function `.oblak-deps` directory, not into the server runtime.
 - **Audit:** database-backed audit events for authentication, upload, verification, preparation and invocation.
 
 ## Quick start
@@ -51,4 +52,4 @@ def handler(event, context):
 
 ## Security note
 
-The current orchestrator is intentionally a **simulator**. It documents where real Firecracker microVM integration belongs, but does not require Linux KVM or root access. For production, replace `SubprocessSandboxOrchestrator` with a Firecracker-backed implementation and enforce network/filesystem/kernel isolation at the VM level.
+The current orchestrator is intentionally a **simulator**. It documents where real Firecracker microVM integration belongs, but does not require Linux KVM or root access. For production, replace `SubprocessSandboxOrchestrator` with a Firecracker-backed implementation and enforce network/filesystem/kernel isolation at the VM level. Dependency installation is functional, but still belongs in a disposable build VM/container in production.

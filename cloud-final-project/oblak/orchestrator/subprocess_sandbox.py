@@ -13,11 +13,12 @@ from oblak.orchestrator.base import ExecutionResult
 
 
 class SubprocessSandboxOrchestrator:
-    """Firecracker simulator.
+    """Runnable Firecracker simulator.
 
-    This class intentionally keeps the same boundary a real Firecracker orchestrator would have:
-    source directory + JSON event in, JSON execution result out. It uses a subprocess sandbox so the
-    project is runnable on ordinary development machines.
+    The implementation preserves the Firecracker-style boundary used by the rest of the
+    application: prepared source directory + JSON event in, structured execution result out.
+    A production deployment can replace this class with a real microVM orchestrator without
+    changing API, storage or audit code.
     """
 
     def __init__(self) -> None:
@@ -32,13 +33,15 @@ class SubprocessSandboxOrchestrator:
             runner_path.write_text(runner, encoding="utf-8")
             try:
                 completed = subprocess.run(
-                    [sys.executable, str(runner_path)],
+                    [sys.executable, "-I", str(runner_path)],
                     cwd=tmp,
                     text=True,
                     capture_output=True,
                     timeout=self.settings.execution_timeout_seconds,
                     env=self._restricted_env(source_dir),
-                    preexec_fn=self._limit_resources if os.name == "posix" else None,
+                    preexec_fn=self._limit_resources
+                    if os.name == "posix" and self.settings.enable_subprocess_resource_limits
+                    else None,
                     check=False,
                 )
             except subprocess.TimeoutExpired as exc:
@@ -49,6 +52,7 @@ class SubprocessSandboxOrchestrator:
                     stdout=(exc.stdout or "")[: self.settings.max_stdout_bytes],
                     stderr="Execution timed out",
                 )
+
         stdout = completed.stdout[: self.settings.max_stdout_bytes]
         stderr = completed.stderr[: self.settings.max_stdout_bytes]
         parsed = self._parse_result(stdout)
@@ -70,8 +74,14 @@ class SubprocessSandboxOrchestrator:
             from pathlib import Path
 
             source_dir = Path({str(source_dir)!r})
+            deps_dir = source_dir / ".oblak-deps"
+            if deps_dir.exists():
+                sys.path.insert(0, str(deps_dir))
             sys.path.insert(0, str(source_dir))
+
             spec = importlib.util.spec_from_file_location("handler", source_dir / "handler.py")
+            if spec is None or spec.loader is None:
+                raise RuntimeError("Cannot load handler.py")
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
             context = {{"platform": "oblak", "isolation": "subprocess-simulator"}}
@@ -85,9 +95,12 @@ class SubprocessSandboxOrchestrator:
         )
 
     def _restricted_env(self, source_dir: Path) -> dict[str, str]:
+        deps_dir = source_dir / ".oblak-deps"
+        pythonpath = str(source_dir) if not deps_dir.exists() else os.pathsep.join([str(deps_dir), str(source_dir)])
         return {
-            "PYTHONPATH": str(source_dir),
+            "PYTHONPATH": pythonpath,
             "PYTHONDONTWRITEBYTECODE": "1",
+            "PYTHONNOUSERSITE": "1",
             "OBLAK_SANDBOX": "1",
         }
 
@@ -95,16 +108,27 @@ class SubprocessSandboxOrchestrator:
         try:
             import resource
 
-            resource.setrlimit(resource.RLIMIT_CPU, (self.settings.execution_timeout_seconds, self.settings.execution_timeout_seconds + 1))
-            resource.setrlimit(resource.RLIMIT_AS, (256 * 1024 * 1024, 256 * 1024 * 1024))
-            resource.setrlimit(resource.RLIMIT_NOFILE, (32, 32))
+            cpu_limit = max(1, int(self.settings.execution_timeout_seconds))
+            resource.setrlimit(resource.RLIMIT_CPU, (cpu_limit, cpu_limit + 1))
+            resource.setrlimit(
+                resource.RLIMIT_AS,
+                (self.settings.sandbox_memory_bytes, self.settings.sandbox_memory_bytes),
+            )
+            resource.setrlimit(
+                resource.RLIMIT_NOFILE,
+                (self.settings.sandbox_nofile_limit, self.settings.sandbox_nofile_limit),
+            )
         except Exception:
+            # The simulator must remain portable. Real Firecracker integration would fail closed.
             pass
 
     def _parse_result(self, stdout: str) -> dict[str, Any]:
         for line in reversed(stdout.splitlines()):
             if line.startswith("__OBLAK_RESULT__"):
-                return json.loads(line.removeprefix("__OBLAK_RESULT__"))
+                try:
+                    return json.loads(line.removeprefix("__OBLAK_RESULT__"))
+                except json.JSONDecodeError:
+                    return {"ok": False, "result": None}
         return {"ok": False, "result": None}
 
     def _duration_ms(self, start: float) -> int:

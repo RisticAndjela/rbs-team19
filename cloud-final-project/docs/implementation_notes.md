@@ -4,6 +4,10 @@
 
 The project specification recommends Firecracker for unsafe code execution, but real Firecracker requires Linux KVM access, root/jailer setup and a prepared microVM root filesystem. This implementation keeps the same architectural seam through an `Orchestrator` protocol and a `SubprocessSandboxOrchestrator`. That makes the project runnable in a normal academic/dev environment while documenting the exact replacement point for real Firecracker.
 
+## Dependency preparation
+
+When `requirements.txt` is present, the server installs dependencies into `.oblak-deps` inside the stored function artifact using `pip --target`. The subprocess runner prepends this directory to `PYTHONPATH`. This completes the academic preparation flow while keeping the production note clear: a real deployment should build this layer inside a disposable builder and attach it to a Firecracker root filesystem.
+
 ## Clean-code structure
 
 - `oblak/api`: HTTP routes and app factory.

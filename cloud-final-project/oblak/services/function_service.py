@@ -1,4 +1,6 @@
 import json
+import subprocess
+import sys
 import zipfile
 from io import BytesIO
 from pathlib import Path
@@ -7,6 +9,7 @@ from typing import Any
 from fastapi import HTTPException, UploadFile, status
 from sqlalchemy.orm import Session
 
+from oblak.core.config import get_settings
 from oblak.models.entities import Function, FunctionStatus, Invocation, User
 from oblak.orchestrator.subprocess_sandbox import SubprocessSandboxOrchestrator
 from oblak.services.audit_service import AuditService
@@ -21,6 +24,7 @@ class FunctionService:
         self.verifier = CodeVerifier()
         self.orchestrator = SubprocessSandboxOrchestrator()
         self.audit = AuditService(db)
+        self.settings = get_settings()
 
     async def upload(self, owner: User, name: str, file: UploadFile) -> Function:
         data = await file.read()
@@ -83,10 +87,49 @@ class FunctionService:
             raise HTTPException(status_code=400, detail="Archive must include handler.py")
 
     def _prepare(self, source_dir: Path) -> None:
+        """Prepare an uploaded function for execution.
+
+        If `requirements.txt` exists, dependencies are installed into a per-function target
+        directory (`.oblak-deps`) instead of the server environment. This is still not a
+        substitute for a Firecracker root filesystem, but it makes the academic Lambda flow
+        functional and keeps dependencies isolated at the filesystem level.
+        """
         requirements = source_dir / "requirements.txt"
+        deps_dir = source_dir / ".oblak-deps"
         marker = source_dir / ".oblak-prepared"
+
+        if requirements.exists() and self.settings.enable_dependency_install:
+            deps_dir.mkdir(exist_ok=True)
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "pip",
+                    "install",
+                    "--disable-pip-version-check",
+                    "--no-input",
+                    "--target",
+                    str(deps_dir),
+                    "-r",
+                    str(requirements),
+                ],
+                text=True,
+                capture_output=True,
+                timeout=self.settings.dependency_install_timeout_seconds,
+                check=False,
+            )
+            if completed.returncode != 0:
+                raise HTTPException(
+                    status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                    detail={
+                        "message": "Dependency installation failed",
+                        "stderr": completed.stderr[-4000:],
+                    },
+                )
+
         marker.write_text(
-            "Dependencies would be installed here in a production builder.\n"
-            f"requirements_present={requirements.exists()}\n",
+            "prepared=true\n"
+            f"requirements_present={requirements.exists()}\n"
+            f"dependencies_installed={deps_dir.exists()}\n",
             encoding="utf-8",
         )

@@ -31,8 +31,10 @@ class LocalFunctionStorage:
         with zipfile.ZipFile(archive_path) as archive:
             for member in archive.infolist():
                 member_path = (destination / member.filename).resolve()
-                if not str(member_path).startswith(str(destination.resolve())):
-                    raise StorageError("Archive contains unsafe path traversal")
+                try:
+                    member_path.relative_to(destination.resolve())
+                except ValueError as exc:
+                    raise StorageError("Archive contains unsafe path traversal") from exc
                 if member.file_size > self.settings.max_archive_bytes:
                     raise StorageError("Archive member is too large")
             archive.extractall(destination)

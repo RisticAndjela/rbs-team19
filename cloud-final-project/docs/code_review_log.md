@@ -22,3 +22,12 @@
 - Static AST analyzer checks handler contract, dangerous imports and dangerous calls.
 - Regex analyzer catches suspicious shell/network/secret patterns.
 - ClamAV and LLM are adapter-style so real infrastructure can be connected without redesign.
+
+
+## Review 5: Fix pass
+
+- Fixed the subprocess sandbox so benign handlers execute reliably in normal development environments.
+- Added real per-function dependency preparation through `pip --target .oblak-deps`.
+- Hardened zip traversal validation by using `Path.relative_to` instead of string prefix matching.
+- Scoped the audit endpoint to the authenticated user's events.
+- Re-ran the test suite: all tests pass.

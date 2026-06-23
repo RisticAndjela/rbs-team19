@@ -12,6 +12,11 @@ class Settings(BaseSettings):
     max_requirements_lines: int = 40
     execution_timeout_seconds: int = 5
     max_stdout_bytes: int = 20_000
+    enable_dependency_install: bool = True
+    dependency_install_timeout_seconds: int = 60
+    sandbox_memory_bytes: int = 512 * 1024 * 1024
+    enable_subprocess_resource_limits: bool = False
+    sandbox_nofile_limit: int = 64
     enable_clamav: bool = False
     clamav_command: str = "clamscan"
     enable_llm_analysis: bool = True
