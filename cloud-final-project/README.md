@@ -11,7 +11,7 @@ This implementation follows the project scope from the specification: authentica
 - **Storage:** local filesystem storage under `OBLAK_STORAGE_ROOT`.
 - **Database:** SQLAlchemy; SQLite by default, PostgreSQL-compatible via `OBLAK_DATABASE_URL`.
 - **Code verifier:** static AST/rule checks, regex checks, optional ClamAV scan, optional/mock LLM analyzer adapter.
-- **Execution:** simulator Firecracker orchestrator using a subprocess sandbox with timeout, isolated working directory, restricted environment and optional Unix resource limits.
+- **Execution:** configurable orchestrator. `subprocess` is the default portable development backend; `firecracker` starts a disposable Firecracker microVM per invocation on Linux/KVM hosts.
 - **Dependency preparation:** optional `requirements.txt` installation into a per-function `.oblak-deps` directory, not into the server runtime.
 - **Audit:** database-backed audit events for authentication, upload, verification, preparation and invocation.
 
@@ -50,6 +50,25 @@ def handler(event, context):
 
 `requirements.txt` is optional.
 
+## Execution backend
+
+By default, the project uses the portable subprocess sandbox so the API, CLI and tests run on ordinary development machines:
+
+```bash
+export OBLAK_EXECUTION_BACKEND=subprocess
+```
+
+To use real Firecracker isolation on a Linux/KVM host, prepare a Firecracker binary, kernel image and root filesystem image, then run:
+
+```bash
+export OBLAK_EXECUTION_BACKEND=firecracker
+export OBLAK_FIRECRACKER_BINARY=/usr/local/bin/firecracker
+export OBLAK_FIRECRACKER_KERNEL_IMAGE=./firecracker/vmlinux
+export OBLAK_FIRECRACKER_ROOTFS_IMAGE=./firecracker/rootfs.ext4
+```
+
+See `docs/firecracker_integration.md` for the complete host setup, execution pipeline and defence notes.
+
 ## Security note
 
-The current orchestrator is intentionally a **simulator**. It documents where real Firecracker microVM integration belongs, but does not require Linux KVM or root access. For production, replace `SubprocessSandboxOrchestrator` with a Firecracker-backed implementation and enforce network/filesystem/kernel isolation at the VM level. Dependency installation is functional, but still belongs in a disposable build VM/container in production.
+The subprocess backend is intentionally kept as a simulator for portability. It is not equivalent to VM isolation. The Firecracker backend runs uploaded code inside a fresh microVM with a read-only per-invocation code drive and no host directory mount. Dependency installation is functional, but still belongs in a disposable build VM/container in production.

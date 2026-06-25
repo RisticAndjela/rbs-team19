@@ -1,7 +1,7 @@
 [project]
 name = "oblak"
 version = "0.1.0"
-description = "Academic serverless platform for executing user Python code with verification, audit and simulated isolation."
+description = "Academic serverless platform for executing user Python code with verification, audit and subprocess or Firecracker isolation."
 requires-python = ">=3.11"
 dependencies = [
   "fastapi>=0.111.0",

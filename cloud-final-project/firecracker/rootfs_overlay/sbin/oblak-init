@@ -1,0 +1,75 @@
+#!/usr/bin/env python3
+"""Minimal guest init for the Oblak Firecracker root filesystem.
+
+This file must be copied into the guest rootfs at /sbin/oblak-init and made executable.
+It mounts the secondary read-only code drive, loads /function/handler.py, executes
+handler(event, context), prints __OBLAK_RESULT__ JSON to the serial console and powers off.
+"""
+import base64
+import importlib.util
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+RESULT_PREFIX = "__OBLAK_RESULT__"
+
+
+def sh(*args: str, check: bool = False) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(args, text=True, capture_output=True, check=check)
+
+
+def cmdline_value(name: str) -> str | None:
+    for part in Path("/proc/cmdline").read_text(encoding="utf-8", errors="replace").split():
+        if part.startswith(name + "="):
+            return part.split("=", 1)[1]
+    return None
+
+
+def emit(ok: bool, result):
+    print(RESULT_PREFIX + json.dumps({"ok": ok, "result": result}, default=str), flush=True)
+
+
+def poweroff():
+    sh("sync")
+    for command in [("poweroff", "-f"), ("reboot", "-f")]:
+        try:
+            sh(*command)
+        except Exception:
+            pass
+    os._exit(0)
+
+
+def main() -> None:
+    try:
+        sh("mount", "-t", "proc", "proc", "/proc")
+        sh("mount", "-t", "sysfs", "sysfs", "/sys")
+        sh("mount", "-t", "devtmpfs", "devtmpfs", "/dev")
+        Path("/mnt/code").mkdir(parents=True, exist_ok=True)
+        sh("mount", "-o", "ro", "/dev/vdb", "/mnt/code", check=True)
+
+        payload_b64 = cmdline_value("oblak_payload_b64") or "e30="
+        event = json.loads(base64.urlsafe_b64decode(payload_b64.encode("ascii")).decode("utf-8"))
+
+        source_dir = Path("/mnt/code/function")
+        deps_dir = source_dir / ".oblak-deps"
+        if deps_dir.exists():
+            sys.path.insert(0, str(deps_dir))
+        sys.path.insert(0, str(source_dir))
+
+        spec = importlib.util.spec_from_file_location("handler", source_dir / "handler.py")
+        if spec is None or spec.loader is None:
+            raise RuntimeError("Cannot load handler.py from code drive")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        context = {"platform": "oblak", "isolation": "firecracker-microvm"}
+        emit(True, module.handler(event, context))
+    except Exception as exc:
+        emit(False, str(exc))
+    finally:
+        poweroff()
+
+
+if __name__ == "__main__":
+    main()

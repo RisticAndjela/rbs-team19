@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 
 from oblak.core.config import get_settings
 from oblak.models.entities import Function, FunctionStatus, Invocation, User
-from oblak.orchestrator.subprocess_sandbox import SubprocessSandboxOrchestrator
+from oblak.orchestrator.factory import create_orchestrator
 from oblak.services.audit_service import AuditService
 from oblak.storage.local_storage import LocalFunctionStorage, StorageError
 from oblak.verifier.code_verifier import CodeVerifier
@@ -22,7 +22,7 @@ class FunctionService:
         self.db = db
         self.storage = LocalFunctionStorage()
         self.verifier = CodeVerifier()
-        self.orchestrator = SubprocessSandboxOrchestrator()
+        self.orchestrator = create_orchestrator()
         self.audit = AuditService(db)
         self.settings = get_settings()
 
