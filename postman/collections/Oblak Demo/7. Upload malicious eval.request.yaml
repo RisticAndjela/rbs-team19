@@ -1,0 +1,31 @@
+$kind: http-request
+description: Demonstracija da verifikator odbija funkciju koja koristi `eval`.
+url: "{{baseUrl}}/functions"
+method: POST
+headers:
+  X-API-Key: "{{apiKey}}"
+body:
+  type: formdata
+  content:
+    - type: text
+      key: name
+      value: "{{maliciousFunctionName}}"
+    - type: file
+      key: file
+      src: "{{maliciousZipPath}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Upload malicious vraca 200', function () {
+        pm.response.to.have.status(200);
+      });
+
+      const body = pm.response.json();
+      pm.environment.set('maliciousFunctionId', body.id);
+      pm.environment.set('maliciousFunctionStatus', body.status);
+
+      pm.test('Malicious funkcija je odbijena', function () {
+        pm.expect(body.status).to.eql('rejected');
+      });
+    language: text/javascript
+order: 7000

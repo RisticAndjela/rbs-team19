@@ -1,0 +1,27 @@
+$kind: http-request
+description: Drugi invoke korak za demo, sa jednostavnim sabiranjem.
+url: "{{baseUrl}}/invoke/{{mathInvokeToken}}"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "payload": {
+        "numbers": [3, 5, 8]
+      }
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Invoke math vraca 200', function () {
+        pm.response.to.have.status(200);
+      });
+
+      const body = pm.response.json();
+      pm.test('Math rezultat je tacan', function () {
+        pm.expect(body.result).to.eql({ sum: 16, count: 3 });
+      });
+    language: text/javascript
+order: 6000

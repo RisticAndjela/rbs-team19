@@ -1,0 +1,33 @@
+$kind: http-request
+description: Izvrsavanje poslednje uploadovane `hello` funkcije bez autentikacije, preko javnog invoke tokena.
+url: "{{baseUrl}}/invoke/{{lastInvokeToken}}"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "payload": {
+        "name": "Demo publika"
+      }
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Invoke hello vraca 200', function () {
+        pm.response.to.have.status(200);
+      });
+
+      const body = pm.response.json();
+      pm.environment.set('lastInvocationId', body.invocation_id);
+
+      pm.test('Invoke vraca hello poruku', function () {
+        pm.expect(body.result.message).to.eql('Hello, Demo publika!');
+      });
+
+      pm.test('Invoke je uspesno zavrsen', function () {
+        pm.expect(body.status).to.eql('succeeded');
+      });
+    language: text/javascript
+order: 4000

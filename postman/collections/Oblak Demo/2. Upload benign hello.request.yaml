@@ -1,0 +1,42 @@
+$kind: http-request
+description: Upload benign `hello` funkcije. Test skripta pamti `invoke_url`, token i ID funkcije za sledece korake.
+url: "{{baseUrl}}/functions"
+method: POST
+headers:
+  X-API-Key: "{{apiKey}}"
+body:
+  type: formdata
+  content:
+    - type: text
+      key: name
+      value: "{{helloFunctionName}}"
+    - type: file
+      key: file
+      src: "{{helloZipPath}}"
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Upload hello vraca 200', function () {
+        pm.response.to.have.status(200);
+      });
+
+      const body = pm.response.json();
+      pm.environment.set('lastFunctionId', body.id);
+      pm.environment.set('lastFunctionName', body.name);
+      pm.environment.set('lastFunctionStatus', body.status);
+      pm.environment.set('lastInvokeUrl', body.invoke_url);
+
+      const token = body.invoke_url.split('/invoke/')[1] || '';
+      pm.environment.set('lastInvokeToken', token);
+
+      pm.test('Hello funkcija je pripremljena za izvrsavanje', function () {
+        pm.expect(body.status).to.eql('prepared');
+      });
+
+      pm.test('Invoke token je sacuvan', function () {
+        pm.expect(token).to.not.eql('');
+      });
+    language: text/javascript
+order: 2000

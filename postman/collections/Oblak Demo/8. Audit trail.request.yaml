@@ -1,0 +1,25 @@
+$kind: http-request
+description: Pregled audit zapisa za upload, verifikaciju i invoke korake iz demo toka.
+url: "{{baseUrl}}/audit"
+method: GET
+headers:
+  X-API-Key: "{{apiKey}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Audit vraca 200', function () {
+        pm.response.to.have.status(200);
+      });
+
+      const body = pm.response.json();
+      pm.test('Audit sadrzi upload dogadjaj', function () {
+        const found = body.some(item => item.action === 'function.uploaded');
+        pm.expect(found).to.eql(true);
+      });
+
+      pm.test('Audit sadrzi invoke dogadjaj', function () {
+        const found = body.some(item => item.action === 'function.invoked');
+        pm.expect(found).to.eql(true);
+      });
+    language: text/javascript
+order: 8000

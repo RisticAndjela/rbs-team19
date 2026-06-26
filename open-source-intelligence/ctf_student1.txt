@@ -1,0 +1,102 @@
+CTF Student 1
+Open Source Intelligence
+
+Napomena:
+Ovaj dokument je napravljen po uzoru na `ctf_student3.pdf`, ali sa drugacijim zadacima i jasnijim objasnjenjima.
+Flag format za sve zadatke je: UNS{}
+
+1. Certificate Trail
+
+Tekst zadatka:
+- Flag format: UNS{}
+- Tokom pasivnog izvidjanja bezbednosni tim je otkrio da kompanija koristi vise poddomena nego sto je javno objavljeno.
+- Tvoj zadatak je da pronadjes staging okruzenje koje nije linkovano na glavnom sajtu, ali je ipak ostavilo trag u javno dostupnim izvorima.
+- Potrebno je da identifikujes poddomen i iz njega izdvojis flag.
+
+Sta se proverava:
+- razumevanje certificate transparency izvora
+- sposobnost pasivnog OSINT pretrazivanja
+- povezivanje vise slabih tragova u jedan zakljucak
+
+Objasnjenje / kako bi se resavao zadatak:
+Najbolja pocetna tacka za ovakav zadatak je certificate transparency pretraga, na primer preko crt.sh. Kada organizacija izdaje TLS sertifikat, nazivi domena i poddomena se cesto pojave u javnim CT logovima. To znaci da i interni ili zaboravljeni sistemi ponekad "procure" kroz sertifikate iako nisu linkovani na glavnoj stranici.
+
+Postupak bi isao ovako:
+1. Pretrazi glavni domen organizacije na crt.sh.
+2. Pregledaj SAN polja i stare sertifikate, ne samo najnoviji zapis.
+3. Izdvoji sumnjive poddomene kao sto su `dev`, `test`, `staging`, `old`, `beta` ili `admin`.
+4. Proveri da li staging poddomen vraca drugaciji naslov stranice, zaglavlja ili robots.txt sadrzaj.
+5. Ako je flag ostavljen u HTML komentaru, naslovu stranice ili robots.txt fajlu, izdvoji ga i formatiraj kao flag.
+
+Zasto je ovo dobar OSINT zadatak:
+Ovaj primer lepo pokazuje da nije uvek potrebno aktivno skeniranje. Dovoljno je koristiti javne izvore koje su drugi sistemi vec generisali. To je tipicna OSINT logika: ne "provaljujes" sistem, nego pazljivo citas javne tragove.
+
+Primer zavrsnog resenja:
+Flag: UNS{CT_L0GS_R3V34L_ST4G1NG}
+
+
+2. Repo Breadcrumbs
+
+Tekst zadatka:
+- Flag format: UNS{}
+- Jedan programer je promenio korisnicko ime na GitHub-u i obrisao stare reference sa profila, ali je ipak ostavio dovoljno tragova u javnim repozitorijumima.
+- Tvoj zadatak je da pronadjes njegovo staro korisnicko ime i iz commit istorije izdvojis flag.
+
+Sta se proverava:
+- pivoting iz jednog izvora u drugi
+- analiza commit istorije i javnih metapodataka
+- koriscenje istorijskih tragova koji cesto ostanu previdjeni
+
+Objasnjenje / kako bi se resavao zadatak:
+Ovakvi zadaci se obicno ne resavaju direktnom pretragom jednog profila, zato sto je profil cesto "ociscen". Umesto toga, potrebno je pratiti sporedne tragove: stare README fajlove, issue komentare, package maintainere, release potpise, commit autore i archive kopije stranica.
+
+Dobar tok resavanja bi bio:
+1. Kreni od poznatog repozitorijuma ili projekta koji je osoba odrzavala.
+2. Pregledaj stare commit-ove i obrati paznju na `author` i `committer` polja.
+3. Proveri da li se u starim commit porukama, issue diskusijama ili napomenama uz izdanja pominje prethodno korisnicko ime.
+4. Ako postoji npm, PyPI ili Docker paket povezan sa projektom, pregledaj maintainer metapodatke jer tamo cesto ostanu stariji identiteti.
+5. Kada identifikujes staro korisnicko ime, pretrazi commit istoriju i izdvoji poruku ili fajl u kojem je sakriven flag.
+
+Zasto je objasnjenje vazno:
+Studenti cesto odmah pokusavaju da pogode profil ili da koriste samo Google. To ume da bude sporo i neprecizno. Mnogo bolji pristup je da se identitet gradi postepeno, kroz vise malih potvrda. Upravo to je sustina dobrog OSINT rada: svaki novi trag treba da potvrdi prethodni, a ne da bude nasumicna pretpostavka.
+
+Primer zavrsnog resenja:
+Flag: UNS{C0MM1T_H1ST0RY_N3V3R_L13S}
+
+
+3. Conference Ghost
+
+Tekst zadatka:
+- Flag format: UNS{}
+- Na drustvenim mrezama se pojavila fotografija sa tehnicke konferencije. Na slici se vidi deo bedza, logo sponzora i nekoliko zamucenih detalja iz pozadine.
+- Tvoj zadatak je da odredis u kom gradu je fotografija nastala i da iz javno dostupnih objava rekonstruises skriveni flag.
+
+Sta se proverava:
+- vizuelni OSINT
+- korelacija javnih objava sa drustvenih mreza
+- sposobnost izdvajanja detalja iz "bezazlene" fotografije
+
+Objasnjenje / kako bi se resavao zadatak:
+Ovaj zadatak simulira realnu situaciju u kojoj jedna fotografija daje mnogo vise informacija nego sto deluje na prvi pogled. Treba kombinovati reverse image search, pretragu po hashtag-u, prepoznavanje logotipa i analiziranje konferencijskih galerija.
+
+Koraci mogu biti sledeci:
+1. Izdvoji vizuelne tragove sa slike: boje bedza, deo logotipa, naziv sponzora, stil bine ili naziv dogadjaja.
+2. Pretrazi drustvene mreze i galerije organizatora koristeci kombinaciju tih tragova.
+3. Uporedi fotografije sa istog dogadjaja dok ne pronadjes pun naziv konferencije i lokaciju.
+4. Kada potvrdis grad i dogadjaj, pregledaj objave u istom vremenskom okviru i nadji post u kojem je flag sakriven u opisu, komentaru ili alt tekstu slike.
+
+Zasto je ovo korisno za ucenje:
+Zadatak uci da OSINT nije samo rad sa tekstom i pretragom domena. Vizuelni tragovi, konferencijske fotografije i javne objave cesto otkrivaju identitet, lokaciju, navike i profesionalne veze. Dobar istrazivac ume da spoji te informacije bez preteranog oslanjanja na jedan alat.
+
+Primer zavrsnog resenja:
+Flag: UNS{N0V1_S4D_C0NF_OS1NT}
+
+
+Zakljucak
+
+Za razliku od `ctf_student3.pdf`, ovde su zadaci:
+- tematski drugaciji
+- vise usmereni na OSINT metodologiju nego na samo "pogadjanje alata"
+- praceni objasnjenjima koja govore zasto se neki korak radi, a ne samo sta treba kliknuti
+
+Ako budes zeleo, mogu odmah da napravim i uredjeniju verziju ovog istog sadrzaja kao pravi PDF ili DOCX dokument.

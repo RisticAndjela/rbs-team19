@@ -1,0 +1,40 @@
+name: Oblak Local
+values:
+  - key: baseUrl
+    value: 'http://127.0.0.1:8000'
+  - key: apiKey
+    value: oblak-dev-key
+  - key: helloFunctionName
+    value: demo-hello
+  - key: mathFunctionName
+    value: demo-math
+  - key: maliciousFunctionName
+    value: demo-malicious-eval
+  - key: helloZipPath
+    value: 'C:\Users\User\Documents\8. semestar\rbs\rbs-team19\postman\demo-files\benign-hello.zip'
+  - key: mathZipPath
+    value: 'C:\Users\User\Documents\8. semestar\rbs\rbs-team19\postman\demo-files\benign-math.zip'
+  - key: maliciousZipPath
+    value: 'C:\Users\User\Documents\8. semestar\rbs\rbs-team19\postman\demo-files\malicious-eval.zip'
+  - key: lastFunctionId
+    value: ''
+  - key: lastFunctionName
+    value: ''
+  - key: lastFunctionStatus
+    value: ''
+  - key: lastInvokeUrl
+    value: ''
+  - key: lastInvokeToken
+    value: ''
+  - key: lastInvocationId
+    value: ''
+  - key: mathFunctionId
+    value: ''
+  - key: mathInvokeUrl
+    value: ''
+  - key: mathInvokeToken
+    value: ''
+  - key: maliciousFunctionId
+    value: ''
+  - key: maliciousFunctionStatus
+    value: ''

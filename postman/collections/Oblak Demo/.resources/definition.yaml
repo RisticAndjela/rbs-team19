@@ -1,0 +1,8 @@
+$kind: collection
+description: "Demo tok za Oblak aplikaciju: health check, upload benign funkcija, invoke, provera odbijanja maliciozne funkcije i audit pregled."
+variables:
+  baseUrl: http://127.0.0.1:8000
+scripts:
+  - type: http:beforeRequest
+    code: "pm.request.headers.upsert({ key: 'Accept', value: 'application/json' });"
+    language: text/javascript

@@ -1,0 +1,1 @@
+Ovaj fajl je upisan preko path traversal unosa u tar arhivi.

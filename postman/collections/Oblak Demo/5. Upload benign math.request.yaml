@@ -1,0 +1,32 @@
+$kind: http-request
+description: Drugi benign primer za demo rezultata sa numerickim payload-om.
+url: "{{baseUrl}}/functions"
+method: POST
+headers:
+  X-API-Key: "{{apiKey}}"
+body:
+  type: formdata
+  content:
+    - type: text
+      key: name
+      value: "{{mathFunctionName}}"
+    - type: file
+      key: file
+      src: "{{mathZipPath}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Upload math vraca 200', function () {
+        pm.response.to.have.status(200);
+      });
+
+      const body = pm.response.json();
+      pm.environment.set('mathFunctionId', body.id);
+      pm.environment.set('mathInvokeUrl', body.invoke_url);
+      pm.environment.set('mathInvokeToken', body.invoke_url.split('/invoke/')[1] || '');
+
+      pm.test('Math funkcija je pripremljena', function () {
+        pm.expect(body.status).to.eql('prepared');
+      });
+    language: text/javascript
+order: 5000

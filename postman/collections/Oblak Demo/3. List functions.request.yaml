@@ -1,0 +1,20 @@
+$kind: http-request
+description: Lista svih funkcija za trenutnog korisnika. Korisno za demonstraciju da upload ostaje evidentiran.
+url: "{{baseUrl}}/functions"
+method: GET
+headers:
+  X-API-Key: "{{apiKey}}"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('List functions vraca 200', function () {
+        pm.response.to.have.status(200);
+      });
+
+      const body = pm.response.json();
+      pm.test('Lista sadrzi poslednje uploadovanu funkciju', function () {
+        const found = body.some(item => item.id === pm.environment.get('lastFunctionId'));
+        pm.expect(found).to.eql(true);
+      });
+    language: text/javascript
+order: 3000
