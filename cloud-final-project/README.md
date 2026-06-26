@@ -4,6 +4,8 @@ Oblak is an academic serverless platform inspired by AWS Lambda / Google Cloud F
 
 This implementation follows the project scope from the specification: authentication, code upload, code verification, dependency preparation, invocation URL creation, on-demand execution, auditability, threat modelling, STRIDE documentation and malicious/benign examples.
 
+Verification artifacts for the written report are stored in `docs/`, including `docs/test_report.md`, `docs/static_analysis_report.md` and the raw Bandit output `docs/bandit_report.json`.
+
 ## Architecture
 
 - **Server:** FastAPI REST API.
