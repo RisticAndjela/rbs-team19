@@ -38,7 +38,7 @@ Deploy and invoke the benign example:
 ```bash
 oblak-cdk configure --server-url http://127.0.0.1:8000 --api-key oblak-dev-key
 oblak-cdk deploy examples/benign_hello --name hello
-oblak-cdk invoke hello --payload '{"name":"Andji"}'
+oblak-cdk invoke hello --payload '{"name":"Andjela"}'
 ```
 
 ## Function format

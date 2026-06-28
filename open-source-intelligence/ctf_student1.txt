@@ -2,7 +2,6 @@ CTF Student 1
 Open Source Intelligence
 
 Napomena:
-Ovaj dokument je napravljen po uzoru na `ctf_student3.pdf`, ali sa drugacijim zadacima i jasnijim objasnjenjima.
 Flag format za sve zadatke je: UNS{}
 
 1. Certificate Trail
